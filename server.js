@@ -11,6 +11,8 @@ const morgan = require("morgan");
 // This line distinguishes between using either our cloud service or a local port
 const port = process.env.PORT ? process.env.PORT : "3000";
 
+const authController = require('./controllers/auth');
+
 mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on("connected", () => {
@@ -23,6 +25,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 // Morgan for logging HTTP requests
 app.use(morgan('dev'));
+
+// Routers
+app.use('/auth', authController)
+
+// GET /
+app.get('/', async (req, res) => {
+    res.render('index.ejs')
+})
+
+
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
